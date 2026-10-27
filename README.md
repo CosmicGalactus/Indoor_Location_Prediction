@@ -25,7 +25,7 @@ The final benchmarked system achieves **99.91% Building Accuracy**, **90.55% Flo
 
 ### 1. The Real-World Gap in Wi-Fi Fingerprinting
 - **Signal Sparsity**: Over 96.5% of Access Points are undetected during any individual scan. The dataset encodes absence with a `+100 dBm` artifact, requiring consistent physical thresholding and positive scaling.
-- **Device & Antenna Bias**: Different smartphone models receive signals with varying gain curves. The evaluation benchmark tests generalization to unseen devices and human collectors.
+- **Device & Antenna Bias**: Different smartphone models receive signals with differing gain curves. The evaluation benchmark tests generalization to unseen devices and human collectors.
 - **Structural Constraints**: Standard spatial regression models operating independently can predict coordinates that violate architectural boundaries or fail to capture the hierarchical relationship between buildings, floors, and spatial rooms.
 
 ### 2. Physical & Statistical Formulation
@@ -42,7 +42,7 @@ The mapping targets are:
 
 ## Dataset & Splitting Invariants
 
-The project utilizes the official **UJIIndoorLoc** benchmark:
+The project utilizes the official **UJIIndoorLoc** benchmarks:
 
 | Split | Rows | WAP Features | Unique Users | Unique Devices | Description |
 |---|---:|---:|---:|---:|---|
