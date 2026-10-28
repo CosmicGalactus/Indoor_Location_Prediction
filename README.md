@@ -172,3 +172,12 @@ Execute the Jupyter notebooks in chronological sequence:
 * **Evaluation Phase**: Phase 1 (Machine Learning Evaluation)
 * **Team**: Team T029 · Section E
 * **Repository**: [https://github.com/CosmicGalactus/Indoor_Location_Prediction](https://github.com/CosmicGalactus/Indoor_Location_Prediction)
+
+
+* **Team name**: T071
+* **Project ID**: 9
+Rishav Dewan : 2401010379
+Balajee : 2401010123
+Pragya Kashyap : 2401010511
+Prakhar srivastav : 2401010135
+Soumen Dass : 2401010458
