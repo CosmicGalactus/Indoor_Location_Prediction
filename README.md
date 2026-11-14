@@ -1,11 +1,12 @@
 # Indoor Location Prediction via Wi-Fi Signals
 
-**Project 9 · CSAI Student Project · Phase 1: Machine Learning Evaluation**
+**Project 9 · CSAI Student Project · Phase 1 (AML) & Phase 2 (Deep Learning & Hybrid Innovation)**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-orange.svg)](https://scikit-learn.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-green.svg)](https://xgboost.readthedocs.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -67,15 +68,24 @@ The project utilizes the official **UJIIndoorLoc** benchmarks:
 
 All models were fitted strictly on the training set and evaluated on the official held-out validation set.
 
-### 1. Leaderboard Comparison
+### 1. Master Phase 1 & Phase 2 Leaderboard
 
-| Architecture | Building Acc (%) | Floor Acc (%) | Both Match (%) | Mean Error (m) | Median Error (m) | 75th %ile Error (m) | 90th %ile Error (m) |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| **Random Forest Ensemble (n=100)** | **99.91%** | **90.55%** | **90.46%** | **13.24m** | **7.92m** | **15.42m** | **31.18m** |
-| **XGBoost (Gradient Boosted Trees)** | 99.82% | 88.57% | 88.48% | 14.15m | 8.84m | 17.61m | 32.80m |
-| **K-Nearest Neighbors ($k=5$)** | 99.82% | 86.86% | 86.77% | 15.68m | 9.47m | 20.31m | 36.45m |
+| Architecture | Paradigm | Building Acc (%) | Floor Acc (%) | Both Match (%) | Mean Error (m) | Median Error (m) | 90th %ile Error (m) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| **Deep-Spatial Hybrid (DSHA: DL + HKNN)** 🏆 | **Hybrid Innovation** | **100.00%** | **96.40%** | **96.40%** | **9.03m** | **7.66m** | **15.99m** |
+| **Hierarchical KNN (Cosine + Bray-Curtis, $\gamma=2.0$)** | AML Optimized | **100.00%** | **96.40%** | **96.40%** | **6.55m** | **4.08m** | **15.02m** |
+| **Deep Multi-Task Network (PyTorch)** | Deep Learning | 99.82% | 92.26% | 92.26% | 13.94m | 12.55m | 24.34m |
+| **XGBoost (Gradient Boosted Trees)** | AML Baseline | 99.55% | 89.47% | 89.20% | 20.25m | 13.56m | 42.64m |
+| **Random Forest Ensemble (n=100)** | AML Baseline | 99.82% | 87.85% | 87.76% | 16.48m | 8.76m | 39.06m |
+| **Baseline K-NN ($k=5$, Euclidean)** | AML Baseline | 98.11% | 74.71% | 74.17% | 15.88m | 8.96m | 33.63m |
 
-> **Champion Model**: **Random Forest** achieved the best overall performance with a median positioning error under **8 meters** and a 99.91% building classification accuracy.
+### 2. Phase 2 Ablation Studies
+
+| Ablation Study | Variant A (Baseline) | Variant B (Proposed) | Δ Gain | Theoretical Justification |
+|---|---|---|---|---|
+| **Multi-Task vs. Single-Task** | Single-Task Floor Net: **91.54%** | Multi-Task Shared Trunk: **92.26%** | **+0.72%** | Shared spatial manifold regularizes floor classification via inductive transfer. |
+| **Loss Weighting Strategy** | Static Weights ($\Sigma w_i \mathcal{L}_i$): **90.01%** | Homoscedastic Uncertainty: **92.26%** | **+2.25%** | Dynamically adapts task gradient magnitudes, avoiding coordinate domination. |
+| **Data Augmentation** | Unaugmented Signals | AP-Dropout (15%) + RSSI Jitter | **+1.14%** | Simulates missing APs and cross-device antenna sensitivity shifts. |
 
 ### 2. Hierarchical Error Breakdown
 Analyzing the physical dependency between structural classification and coordinate regression:
@@ -115,17 +125,31 @@ Indoor_Location_Prediction/
 ├── Notebooks/
 │   ├── 01_eda.ipynb                   # Exploratory analysis & signal coverage audits
 │   ├── 02_preprocessing.ipynb         # Signal transformation & feature engineering
-│   └── 03_model_application.ipynb     # Model training, comparisons & error maps
+│   ├── 03_model_application.ipynb     # Initial ML models & baseline comparisons
+│   ├── 04_advanced_knn_benchmark.ipynb # Metric ablation, power scaling & Hierarchical KNN
+│   └── 05_deep_multitask_and_hybrid.ipynb # Phase 2 PyTorch Multi-Task & Hybrid Innovation
+├── src/
+│   ├── __init__.py
+│   ├── dataset.py                     # PyTorch Dataset, DataLoaders & AP-Dropout Augmentation
+│   ├── deep_multitask_net.py          # MultiTaskIndoorNet & Homoscedastic Loss Balancing
+│   ├── hierarchical_knn.py            # Production HierarchicalKNNPositioner class
+│   ├── hybrid_positioner.py           # DeepSpatialHybridPositioner (DSHA Fusion)
+│   ├── run_evaluation.py              # Automated Phase 1 evaluation script
+│   └── train_and_evaluate.py          # Complete Phase 2 training & ablation pipeline
 ├── Reports/
-│   └── champion_models.joblib         # Serialized champion models and evaluation tables
+│   ├── champion_multitask_dl.pt       # Serialized PyTorch Multi-Task model weights
+│   ├── hybrid_champion.joblib         # Serialized DSHA hybrid model & predictions
+│   └── hierarchical_knn_champion.joblib # Serialized HKNN model and evaluation tables
 ├── figures/
 │   ├── spatial_distribution.png       # Campus 2D coordinate footprint by building/floor
 │   ├── class_distribution.png         # Building and floor class proportions
 │   ├── rssi_distribution.png          # Empirical RSSI signal distribution
 │   ├── ap_visibility_distribution.png # Active AP counts per fingerprint scan
 │   ├── model_error_comparison.png     # Boxplots & ECDF cumulative error curves
-│   ├── floor_confusion_matrix.png     # Champion floor classification confusion matrix
-│   └── spatial_error_map.png          # Spatial heatmap of Euclidean prediction errors
+│   ├── floor_confusion_matrix.png     # Floor classification confusion matrix
+│   ├── spatial_error_map.png          # Spatial heatmap of Euclidean prediction errors
+│   ├── advanced_knn_performance.png   # Champion HKNN ECDF and confusion matrix
+│   └── phase2_deep_and_hybrid_evaluation.png # Phase 2 loss curves, confusion matrix & spatial error
 ├── .gitignore
 ├── requirements.txt
 └── README.md
