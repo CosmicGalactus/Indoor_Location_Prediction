@@ -11,28 +11,31 @@ from torch.utils.data import Dataset, DataLoader
 
 
 class CoordinateScaler:
-    """Standardizes 2D coordinates for stable multi-task neural network training."""
+    """
+    Standardizes 2D coordinates for stable multi-task neural network training.
+    Computes in double precision (float64) to prevent mantissa precision overflow on large UTM coordinates.
+    """
     def __init__(self):
         self.mean_ = None
         self.std_ = None
 
     def fit(self, coords: np.ndarray):
-        coords = np.asarray(coords, dtype=np.float32)
+        coords = np.asarray(coords, dtype=np.float64)
         self.mean_ = np.mean(coords, axis=0)
         self.std_ = np.std(coords, axis=0)
         self.std_[self.std_ == 0] = 1.0
         return self
 
     def transform(self, coords: np.ndarray) -> np.ndarray:
-        coords = np.asarray(coords, dtype=np.float32)
-        return (coords - self.mean_) / self.std_
+        coords = np.asarray(coords, dtype=np.float64)
+        return ((coords - self.mean_) / self.std_).astype(np.float32)
 
     def fit_transform(self, coords: np.ndarray) -> np.ndarray:
         return self.fit(coords).transform(coords)
 
     def inverse_transform(self, norm_coords: np.ndarray) -> np.ndarray:
-        norm_coords = np.asarray(norm_coords, dtype=np.float32)
-        return (norm_coords * self.std_) + self.mean_
+        norm_coords = np.asarray(norm_coords, dtype=np.float64)
+        return ((norm_coords * self.std_) + self.mean_).astype(np.float64)
 
 
 class WiFiFingerprintDataset(Dataset):

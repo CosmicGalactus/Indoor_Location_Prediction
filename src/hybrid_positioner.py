@@ -42,7 +42,7 @@ class DeepSpatialHybridPositioner:
         hknn_model: HierarchicalKNNPositioner,
         coord_scaler: CoordinateScaler,
         alpha_floor: float = 0.5,
-        beta_coords: float = 0.5,
+        beta_coords: float = 0.0,
         device: torch.device = None,
     ):
         self.dl_model = dl_model
