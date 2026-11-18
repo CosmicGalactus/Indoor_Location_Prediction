@@ -121,7 +121,7 @@ All models evaluated strictly on the official held-out validation set ($N=1,111$
 
 | Architecture | Paradigm | Building Acc (%) | Floor Acc (%) | Both Match (%) | Mean Error (m) | Median Error (m) | 90th %ile Error (m) |
 |---|---|---:|---:|---:|---:|---:|---:|
-| **Deep-Spatial Hybrid (DSHA: DL + HKNN)** 🏆 | **Hybrid Innovation** | **100.00%** | **96.40%** | **96.40%** | **6.55 m** | **4.08 m** | **15.02 m** |
+| **Deep-Spatial Hybrid (DSHA: DL + HKNN)** | **Hybrid Innovation** | **100.00%** | **96.40%** | **96.40%** | **6.55 m** | **4.08 m** | **15.02 m** |
 | **Hierarchical KNN (Cosine + Bray-Curtis)** | AML Optimized | **100.00%** | **96.40%** | **96.40%** | 6.55 m | 4.08 m | 15.02 m |
 | **Deep Multi-Task Network (PyTorch)** | Deep Learning | 99.91% | 91.99% | 91.99% | 9.77 m | 8.15 m | 18.45 m |
 | **XGBoost Trees ($n=100$)** | AML Baseline | 99.55% | 89.47% | 89.20% | 20.25 m | 13.56 m | 42.64 m |
